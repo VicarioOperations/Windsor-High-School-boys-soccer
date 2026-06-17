@@ -43,7 +43,7 @@ execSync(
 // Mix in voiceover if it exists
 if (fs.existsSync("public/voiceover.mp3")) {
   execSync(
-    `ffmpeg -y -i "${silentMp4}" -i public/voiceover.mp3 -c:v copy -c:a aac -shortest "${finalMp4}"`,
+    `ffmpeg -y -i "${silentMp4}" -i public/voiceover.mp3 -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 "${finalMp4}"`,
     { stdio: "inherit" }
   );
   console.log(`Done with audio: ${finalMp4}`);

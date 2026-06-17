@@ -1,44 +1,57 @@
 #!/usr/bin/env bash
-# Generates the voiceover for the Windsor soccer tactical video via ElevenLabs.
+# Generates voiceover for Windsor soccer tactical video.
+# Voice: Liam (AZnzlk1XvdvUeBnXmlld) — upbeat, direct, serious
 # Usage: ELEVENLABS_API_KEY=your_key ./generate-audio.sh
-# Voice: Adam (pNInz6obpgDQGcFmaJgB), eleven_turbo_v2_5
 
 set -e
 
-VOICE_ID="pNInz6obpgDQGcFmaJgB"
+VOICE_ID="AZnzlk1XvdvUeBnXmlld"
 API_KEY="${ELEVENLABS_API_KEY}"
 
 if [ -z "$API_KEY" ]; then
-  echo "ERROR: Set ELEVENLABS_API_KEY env var first."
-  echo ""
-  echo "=== VOICEOVER SCRIPT (record manually if needed) ==="
-  echo "Beat 1 (0–2.5s):   Their left back has a habit. Watch what he does."
-  echo "Beat 2 (2.5–7s):   Every time the ball switches to the far side, red three steps up — leaving a gap in behind."
-  echo "Beat 3 (7–11s):    They reset. Now watch what happens when we win it."
-  echo "Beat 4 (11–15s):   Six gets it in midfield. Red three is already high. That space is open."
-  echo "Beat 5 (15–17s):   Two and nine — get in there."
-  echo "Beat 6 (17–19s):   Six plays it into the channel."
-  echo "Beat 7 (19–21s):   Two versus one in behind. We're in."
-  echo "Beat 8 (21–22s):   Wingback, striker, six — when their left back steps up, attack that space."
+  echo "ERROR: Set ELEVENLABS_API_KEY."
   exit 1
 fi
 
-SCRIPT="Their left back has a habit. Watch what he does. Every time the ball switches to the far side, red three steps up to the halfway line — leaving a huge gap in behind. They reset. Now watch what happens when we win it. Six gets it in midfield. Red three is already high. That space is open. Two and nine — get in there. Six plays it into the channel. Two versus one in behind. We're in. Wingback, striker, six — when their left back steps up, attack that space."
+echo "Generating voiceover (Liam)..."
+python3 - <<'PYEOF'
+import json, os, subprocess
 
-echo "Generating voiceover..."
-curl -s -X POST "https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}" \
-  -H "xi-api-key: ${API_KEY}" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"text\": \"${SCRIPT}\",
-    \"model_id\": \"eleven_turbo_v2_5\",
-    \"voice_settings\": {
-      \"stability\": 0.65,
-      \"similarity_boost\": 0.75,
-      \"style\": 0.1,
-      \"speed\": 0.92
+script = """Their left back has a habit. Every time the ball goes to the far side, he steps up. He leaves the channel wide open.
+
+Watch what we do with it. Six wins the ball in midfield. Their three is already high. That space is right there.
+
+Two. Nine. Go. Attack the channel.
+
+Six plays it in. Two versus one. We are in behind their defense.
+
+Know your role. Wingback, run that channel. Striker, get in behind. Six, play the ball on time. The second their left back steps up, that is your trigger.
+
+This is how we score."""
+
+payload = {
+    "text": script,
+    "model_id": "eleven_turbo_v2_5",
+    "voice_settings": {
+        "stability": 0.42,
+        "similarity_boost": 0.80,
+        "style": 0.38,
+        "speed": 1.0,
+        "use_speaker_boost": True
     }
-  }" \
-  --output public/voiceover.mp3
+}
 
-echo "Saved to public/voiceover.mp3"
+voice_id = "AZnzlk1XvdvUeBnXmlld"
+api_key = os.environ["ELEVENLABS_API_KEY"]
+
+cmd = [
+    "curl", "-s", "-X", "POST",
+    f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}",
+    "-H", f"xi-api-key: {api_key}",
+    "-H", "Content-Type: application/json",
+    "-d", json.dumps(payload),
+    "--output", "public/voiceover.mp3"
+]
+subprocess.run(cmd, check=True)
+print("Saved to public/voiceover.mp3")
+PYEOF
