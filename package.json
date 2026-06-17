@@ -1,0 +1,28 @@
+{
+  "name": "windsor-soccer",
+  "version": "1.0.0",
+  "description": "Windsor High School Boys Soccer tactical animations",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@remotion/bundler": "4.0.451",
+    "@remotion/cli": "4.0.451",
+    "@remotion/compositor-darwin-x64": "4.0.451",
+    "@remotion/licensing": "4.0.451",
+    "@remotion/media-utils": "4.0.451",
+    "@remotion/renderer": "4.0.451",
+    "@remotion/studio": "4.0.451",
+    "@remotion/transitions": "4.0.451",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.451"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.7",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "node render-video.mjs"
+  }
+}
