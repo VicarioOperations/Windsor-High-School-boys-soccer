@@ -35,8 +35,10 @@ await renderFrames({
 });
 console.log("\nFrames done.");
 
+// Remotion uses 4-digit zero-padding when frame count >= 1000
+const framePad = comp.durationInFrames >= 1000 ? "%04d" : "%03d";
 execSync(
-  `ffmpeg -y -framerate ${comp.fps} -i "${frameDir}/element-%03d.jpeg" -c:v libx264 -pix_fmt yuv420p -crf 18 "${silentMp4}"`,
+  `ffmpeg -y -framerate ${comp.fps} -i "${frameDir}/element-${framePad}.jpeg" -c:v libx264 -pix_fmt yuv420p -crf 18 "${silentMp4}"`,
   { stdio: "inherit" }
 );
 
